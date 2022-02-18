@@ -1,0 +1,46 @@
+      ******************************************************************
+      * OPERAR 2 NUMEROS INTEIROS COM 3 DIGITOS.
+      *
+      *
+      *
+      ******************************************************************
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. EX03.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       77 NUMERO1          PIC S9(03) VALUES 0.
+       77 NUMERO2          PIC S9(03) VALUES 0.
+       77 RESULTADO        PIC S9(06) VALUES 0.
+       77 SAIDA-RESULTADO  PIC Z(05)9-.
+
+       PROCEDURE DIVISION.
+       INICIO-PROGRAMA.
+           DISPLAY "QUAL O 1ß NUMERO:" FOREGROUND-COLOR 2 AT 0101.
+           ACCEPT NUMERO1 AT 0118.
+           DISPLAY "QUAL O 2ß NUMERO:" FOREGROUND-COLOR 2 AT 0301.
+           ACCEPT NUMERO2 AT 0318.
+       CALCULO.
+           COMPUTE RESULTADO = (NUMERO1 + NUMERO2).
+           MOVE RESULTADO TO SAIDA-RESULTADO.
+           DISPLAY FUNCTION CONCATENATE("A SOMA ê:", SAIDA-RESULTADO)
+           AT 0501.
+
+           COMPUTE RESULTADO = (NUMERO1 * NUMERO2).
+           MOVE RESULTADO TO SAIDA-RESULTADO.
+           DISPLAY FUNCTION CONCATENATE("A MULTIPLICAÄéO ê:",
+           SAIDA-RESULTADO) AT 0701.
+
+           COMPUTE RESULTADO = (NUMERO1 / NUMERO2).
+           MOVE RESULTADO TO SAIDA-RESULTADO.
+           DISPLAY FUNCTION CONCATENATE("A DIVISéO ê:",SAIDA-RESULTADO)
+           AT 0901.
+
+           COMPUTE RESULTADO = (NUMERO1 - NUMERO2).
+           MOVE RESULTADO TO SAIDA-RESULTADO.
+           DISPLAY FUNCTION CONCATENATE("A SUBTRAÄéO ê:",
+           SAIDA-RESULTADO) AT 1101.
+       SAIDA.
+           ACCEPT OMITTED AT 1301.
+           STOP RUN.
+       END PROGRAM EX03.

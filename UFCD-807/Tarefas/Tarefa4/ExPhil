@@ -1,0 +1,260 @@
+      ******************************************************************
+      * Author:
+      * Date:
+      * Purpose:
+      * Tectonics: cobc
+      ******************************************************************
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TF04.
+       DATA DIVISION.
+       FILE SECTION.
+       WORKING-STORAGE SECTION.
+       77 NUMERO-INGREDIENTES        PIC 9 VALUE 5.
+       77 NUMERO-PEDIDO              PIC 99 VALUE 0.
+       77 TIPO-PIZA                  PIC 9.
+           88 VALIDAR-TIPO-PIZA      VALUES 1,2,3.
+       77 TEXTO-TIPO-PIZA            PIC A(13).
+       77 INGREDIENTES               PIC 99 VALUE 0.
+           88 VALIDAR-INGREDIENTES   VALUE 0 THROUGH 10.
+       77 PRECO-PIZA                 PIC 9V99 VALUE 0.
+       77 PRECO-INGREDIENTES         PIC 9V99 VALUE 0.
+       77 PRECO-TOTAL                PIC 9V99 VALUE 0.
+       77 PRECO-IVA                  PIC 9V99 VALUE 0.
+       77 PRECO-FINAL                PIC 99V99 VALUE 0.
+       77 SAIDA-PRECO                PIC Z9.99 VALUE SPACES.
+       77 FILA                       PIC 99 VALUE 30.
+       77 NOME-CLIENTE               PIC A(25) VALUE SPACES.
+       77 ENTRADA-CONTACTO           PIC X(9).
+       77 ENTRADA-NUMERO-1           PIC X.
+       77 ENTRADA-NUMERO-2           PIC XX.
+       77 SAIDA-NUMERO               PIC Z9.
+       77 CONTACTO                   PIC 9(9).
+           88 VALIDAR-CONTACTO       VALUES 200000000 THROUGH 399999999,
+                                            910000000 THROUGH 930000000,
+                                            960000000 THROUGH 969999999.
+       77 CONTINUAR                  PIC A.
+           88 VALIDAR-CONTINUAR      VALUES 'S','s','N','n'.
+       01 DATA_HOJE.
+           05 ANO                    PIC 9(4).
+           05 MES                    PIC 99.
+           05 DIA                    PIC 99.
+
+       SCREEN SECTION.
+       01 CLS BLANK SCREEN.
+
+       01 MENU.
+
+           05 COL 70 VALUE "      TIPO DE PIZA"      LINE 03.
+           05 COL 70 VALUE "                       " LINE 04.
+           05 COL 70 VALUE "  (1) Pequena      3.00" LINE 05.
+           05 COL 70 VALUE "  (2) Media        4.00" LINE 06.
+           05 COL 70 VALUE "  (3) Grande       5.00" LINE 07.
+
+           05 COL 70 VALUE "      INGREDIENTES"      LINE 09.
+           05 COL 70 VALUE "                       " LINE 10.
+           05 COL 70 VALUE "  (1) Fiambre      0.50" LINE 11.
+           05 COL 70 VALUE "  (2) Atum         0.70" LINE 12.
+           05 COL 70 VALUE "  (3) Anchovas     0.40" LINE 13.
+           05 COL 70 VALUE "  (4) Camarao      0.80" LINE 14.
+           05 COL 70 VALUE "  (5) Bacon        0.90" LINE 15.
+           05 COL 70 VALUE "  (6) Banana       0.30" LINE 16.
+           05 COL 70 VALUE "  (7) Ananas       0.40" LINE 17.
+           05 COL 70 VALUE "  (8) Azeitonas    0.30" LINE 18.
+           05 COL 70 VALUE "  (9) Cogumelos    0.60" LINE 19.
+           05 COL 70 VALUE " (10) Milho        0.50" LINE 20.
+
+       01 FORMULARIO.
+           05 COL 03 VALUE " N. PEDIDO: "   LINE 03.
+           05 COL 03 VALUE " DATA: "        LINE 06.
+           05 COL 27 VALUE "    CLIENTE: "  LINE 03.
+           05 COL 27 VALUE "    CONTACTO: " LINE 06.
+           05 COL 03 VALUE "TIPO DE PIZA: " LINE 10.
+           05 COL 03 VALUE "INGREDIENTES: " LINE 12.
+
+       PROCEDURE DIVISION.
+       INICIO.
+
+           ADD 1 TO NUMERO-PEDIDO.
+           DISPLAY CLS AT 0101.
+
+           DISPLAY MENU.
+           DISPLAY FORMULARIO.
+           MOVE FUNCTION CURRENT-DATE TO DATA_HOJE.
+           DISPLAY FUNCTION CONCATENATE(DIA,"-",MES,"-",ANO) AT 0610.
+           DISPLAY NUMERO-PEDIDO AT 0315.
+           ACCEPT NOME-CLIENTE AT 0340.
+
+       CHECK-CONTACTO.
+
+           ACCEPT ENTRADA-CONTACTO AT 0641.
+           MOVE FUNCTION NUMVAL(ENTRADA-CONTACTO) TO CONTACTO.
+           IF(NOT VALIDAR-CONTACTO)THEN
+               DISPLAY "NUMERO DE TELEFONE INVALIDO" AT 0741
+               FOREGROUND-COLOR 4 HIGHLIGHT
+               GO CHECK-CONTACTO
+           ELSE
+               DISPLAY "                 " AT 0741
+           END-IF.
+
+       PEDIDO.
+           MOVE 5 TO NUMERO-INGREDIENTES.
+           MOVE 0 TO PRECO-PIZA.
+           MOVE 0 TO PRECO-INGREDIENTES.
+           DISPLAY "(1 - 3)                                  "  AT 1019.
+           DISPLAY "                                          " AT 1219.
+
+       CHECK-TIPO-PIZA.
+           ACCEPT ENTRADA-NUMERO-1 AT 1017.
+           MOVE FUNCTION NUMVAL(ENTRADA-NUMERO-1) TO TIPO-PIZA.
+           DISPLAY TIPO-PIZA AT 1017.
+           IF(NOT VALIDAR-TIPO-PIZA)THEN
+               DISPLAY "INVALIDO, ESCOLHA 1, 2 OU 3!"
+               AT 1019 FOREGROUND-COLOR 4 HIGHLIGHT
+               GO CHECK-TIPO-PIZA
+           ELSE
+               DISPLAY "                                         "
+           AT 1019
+               IF (TIPO-PIZA = 1)THEN
+                   DISPLAY "PIZA PEQUENA" AT 1019 FOREGROUND-COLOR 2
+                   MOVE "PIZA PEQUENA" TO TEXTO-TIPO-PIZA
+                   MOVE 3 TO PRECO-PIZA
+               ELSE
+                   IF (TIPO-PIZA = 2) THEN
+                       DISPLAY "PIZA MEDIA" AT 1019 FOREGROUND-COLOR 2
+                       MOVE "PIZA MEDIA" TO TEXTO-TIPO-PIZA
+                       MOVE 4 TO PRECO-PIZA
+                   ELSE
+                       DISPLAY "PIZA GRANDE" AT 1019 FOREGROUND-COLOR 2
+                       MOVE "PIZA GRANDE" TO TEXTO-TIPO-PIZA
+                       MOVE 5 TO PRECO-PIZA
+                   END-IF
+               END-IF
+           END-IF.
+           DISPLAY
+           "INGREDIENTES EXTRA (5 Max). 0 - Terminar"
+           AT 1220.
+
+       CHECK-INGREDIENTES.
+
+           ACCEPT ENTRADA-NUMERO-2 AT 1217.
+           IF(ENTRADA-NUMERO-2 = "99") THEN
+               GO PEDIDO
+           END-IF
+           MOVE FUNCTION NUMVAL(ENTRADA-NUMERO-2) TO INGREDIENTES.
+           MOVE INGREDIENTES TO SAIDA-NUMERO.
+           DISPLAY SAIDA-NUMERO AT 1217.
+           IF(NOT VALIDAR-INGREDIENTES)THEN
+               DISPLAY
+               "(1 - 10)-Ingredientes, 0-Finalizar"
+               AT 1303 FOREGROUND-COLOR 4 HIGHLIGHT
+               GO CHECK-INGREDIENTES
+           ELSE
+               COMPUTE FILA = 21 - NUMERO-INGREDIENTES
+
+               DISPLAY
+               "                                                       "
+           AT 1303
+              DISPLAY  "COD INGREDIENTE PRECO" AT 1403
+              DISPLAY  "                     " AT 1503
+               EVALUATE INGREDIENTES
+                   WHEN 1
+                       DISPLAY
+                       "  1 FIAMBRE     0.50"
+                       AT COL 03 LINE FILA
+                       ADD 0.5 TO PRECO-INGREDIENTES
+                   WHEN 2
+                       DISPLAY
+                       "  2 ATUM        0.70"
+                       AT COL 03 LINE FILA
+                       ADD 0.7 TO PRECO-INGREDIENTES
+                   WHEN 3
+                       DISPLAY
+                       "  3 ANCHOVAS    0.40"
+                       AT COL 03 LINE FILA
+                       ADD 0.4 TO PRECO-INGREDIENTES
+                   WHEN 4
+                       DISPLAY
+                       "  4 CAMARAO     0.80"
+                       AT COL 03 LINE FILA
+                       ADD 0.8 TO PRECO-INGREDIENTES
+                   WHEN 5
+                       DISPLAY
+                       "  5 BACON       0.90"
+                       AT COL 03 LINE FILA
+                       ADD 0.9 TO PRECO-INGREDIENTES
+                   WHEN 6
+                       DISPLAY
+                       "  6 BANANA      0.30"
+                       AT COL 03 LINE FILA
+                       ADD 0.3 TO PRECO-INGREDIENTES
+                   WHEN 7
+                       DISPLAY
+                       "  7 ANANAS      0.40"
+                       AT COL 03 LINE FILA
+                       ADD 0.4 TO PRECO-INGREDIENTES
+                   WHEN 8
+                       DISPLAY
+                       "  8 AZEITONAS   0.30"
+                       AT COL 03 LINE FILA
+                       ADD 0.3 TO PRECO-INGREDIENTES
+                   WHEN 9
+                       DISPLAY
+                       "  9 COGUMELOS   0.60"
+                       AT COL 03 LINE FILA
+                       ADD 0.6 TO PRECO-INGREDIENTES
+                   WHEN 10
+                       DISPLAY
+                       " 10 MILHO       0.50"
+                       AT COL 03 LINE FILA
+                       ADD 0.5 TO PRECO-INGREDIENTES
+
+           END-EVALUATE
+               IF (INGREDIENTES <> 0) THEN
+                   SUBTRACT 1 FROM NUMERO-INGREDIENTES
+                   IF (NUMERO-INGREDIENTES > 0) THEN
+                       GO CHECK-INGREDIENTES
+                   END-IF
+               END-IF
+           END-IF.
+           COMPUTE PRECO-TOTAL= PRECO-PIZA + PRECO-INGREDIENTES.
+           COMPUTE PRECO-IVA= PRECO-TOTAL*0.23.
+           COMPUTE PRECO-FINAL = PRECO-TOTAL + PRECO-IVA.
+           DISPLAY "                                 " AT 1425.
+           DISPLAY FUNCTION
+           CONCATENATE("     ",TEXTO-TIPO-PIZA)
+           AT 2301.
+           DISPLAY "     TOTAL INGREDIENTES:" AT 2401.
+           DISPLAY "     PRECO FINAL SEM IVA:" AT 2501.
+           DISPLAY "     IVA (23%):" AT 2601.
+           DISPLAY "                                      " AT 2701.
+           DISPLAY "     TOTAL A PAGAR:" AT 2801.
+           MOVE PRECO-PIZA TO SAIDA-PRECO.
+           DISPLAY FUNCTION CONCATENATE(SAIDA-PRECO) AT 2330.
+           MOVE PRECO-INGREDIENTES TO SAIDA-PRECO.
+           DISPLAY FUNCTION CONCATENATE(SAIDA-PRECO) AT 2430.
+           MOVE PRECO-TOTAL TO SAIDA-PRECO.
+           DISPLAY FUNCTION CONCATENATE(SAIDA-PRECO) AT 2530.
+           MOVE PRECO-IVA TO SAIDA-PRECO.
+           DISPLAY FUNCTION CONCATENATE(SAIDA-PRECO) AT 2630.
+           MOVE PRECO-FINAL TO SAIDA-PRECO.
+           DISPLAY FUNCTION CONCATENATE(SAIDA-PRECO," Euros") AT 2830.
+
+           DISPLAY "FAZER NOVO PEDIDO? (S/N)"
+           FOREGROUND-COLOR 2 HIGHLIGHT AT 3001.
+
+       CHECK-CONTINUA.
+
+           ACCEPT CONTINUAR AT 3030
+           IF (NOT VALIDAR-CONTINUAR)THEN
+               DISPLAY "RESPOSTA INVALIDA, TEM DE ESCOLHER S OU N"
+               AT 3032 FOREGROUND-COLOR 4 HIGHLIGHT
+               GO CHECK-CONTINUA
+           ELSE
+               DISPLAY " " ERASE EOL
+           END-IF.
+
+           IF (FUNCTION UPPER-CASE(CONTINUAR)="S") THEN
+              GO INICIO
+           END-IF.
+           STOP RUN.
+       END PROGRAM TF04.
